@@ -1,0 +1,13 @@
+import React from 'react';
+import Layout from '@theme-original/Layout';
+import KoFiWidget from '../../components/HomepageFeatures/KoFiWidget';
+
+export default function LayoutWrapper(props) {
+  return (
+    <>
+      <Layout {...props} />
+      <KoFiWidget />
+    </>
+  );
+}
+

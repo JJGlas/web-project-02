@@ -1,0 +1,78 @@
+---
+sidebar_position: 5
+---
+
+# VVenC
+
+## Software (CPU-based) VVC (Versitile Video Codec) Encoding with libvvenc
+
+The VVenC encoder encodes to VVC/H.266, which currently offers the most efficient compression while synthetically restoring film grain better than AOMENC or SVT-AV1. Film grain analysis and synthesis also is automatically calculated, so no trial and error is needed! Slower, CPU-based encoding offers superior compression efficiency compared to hardware-accelerated encoding, at the cost of longer processing time.
+
+1. Ensure you already have installed FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
+
+3. The following commands is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable and synthesizes the original look of film grain from the source:
+
+```bash
+ffmpeg -i input.mkv -map 0 -c:v libvvenc -preset medium -qp 30 -vvenc-params Threads=22:MTProfile=2:fga=1 -an encoded_output.mkv
+```
+## Breakdown of the Command
+
+### Base Command & Input
+    
+    - `ffmpeg`: The command-line tool for processing multimedia files.
+    - `-i input.mkv`: Specifies the input file. Replace `input.mkv` with your actual video file path.
+
+### Encoder Selection
+
+    - `c:v libvvenc`: Uses the VVenC encoder backend. Developed by Fraunhofer HHI, VVenC is a fast, easy-to-use H.266/VVC encoder offering quality/speed presets, perceptual optimization, strong parallelization, and flexible single- or two-pass rate control.
+
+### Video Encoding Settings
+    
+    These options are passed directly to the VVenC encoder:
+
+    - `-preset medium`: Balanced speed/quality preset. Lower presets (slow, slower) improve compression efficiency but require more time. Higher presets (fast, faster) trade quality for speed.
+    - `-qp 30`: Quantization Parameter mode (constant QP). Lower values = higher quality/larger files; higher values = more compression. QP ~22–32 is typical for good quality; 30 is moderate/lean compression. This setting will influence your encoding speed dramatically.
+    - `Threads=22`: Manually sets the number of worker threads VVenC should use. Higher thread counts increase speed, especially with task-based parallelization, but may slightly reduce determinism. I chose this based on my 24 thread AMD 7900X3D. `24` works as well, but can cause some system instability for a tiny inscrease in encoding speed. If omitted, the dafault of only 8 threads is used! Do multiple tests to see how encoding speed is impacted. 
+    - `MTProfile=2`: Selects the multithreading profile. `2` = Task-based parallelism, giving the best scalability on high-core CPUs. On my AMD 7900X3D I get ≈6.5 fps encoding speed for 1080p 24 fps SDR video. 
+    - `fga=1`: enables Film Grain Analysis. It lets VVenC analyze the source for film grain and generate SEI parameters for later synthesis during playback in MPV. If you don't have grain in your source video or don't want grain, exclude this parameter. It is so nice to not have to tinker with grain size settings like AV1 requires!
+
+### Audio Handling
+
+    `-an`: Removes audio from the output file.
+
+    Optionally,
+    `-c:a libopus -b:a 128k` will convert you audio to Opus at 128kbps. Which can be convinient if you are encoding numerous episodes or videos.
+    See [Audio Format & Bitrate](http://localhost:3000/category/audio-format-bitrate) if you would like help determining what format and bitrate is suitable for your 
+    Stereo or Surround audio.
+    
+### Output File
+
+    - `fga_qp30_output.mkv`: Specifies the name of the output file, and output file path. 
+
+> 📘 [View Full VVenC Parameter list] by typing `` in the terminal (CMD). Or visit: (https://github.com/fraunhoferhhi/vvenc/wiki/Usage)
+
+## Comparisons
+
+Here is a side by side comparison of the encoded VVC output from the example command beside the 4K (UHD) source. We see the VVC version preserves the film grain while a filze size of only mb is produced. Retaining original grain is for the most part not a good idea if you want small output files as the file increasingly grows with using lower compression settings. To combat this we have synthesised the grain! With Aomenc (AV1) or SVT-AV1 film grain synthesis is an option to solve the issue of adding grain without bloating the file size. Because this example has **consistent grain across every scene**, you could encode with SVT-AV1 instead and use film grain synthesis if you want to reduce the file size further. The file size of the original 10 second UHD HEVC clip was **541 MB** (no audio) **and** the AV1 NVENC encode was **37.2 MB** (no audio)!
+ 
+Download a PNG side by side screenshot of the source vs the VVC compressed version to see the difference:
+
+import ImageDownloadLink from '@site/src/components/ImageDownloadLink';
+
+<ImageDownloadLink 
+  thumbnail="/img/4kSource_vs_NVENCAV1-preview.avif" 
+  fullRes="/img/4kSource_vs_NVENCAV1.png"
+  alt="Preview of the full-res side by side comparison"
+/>
+
+In another example below, the anime, Sousou no Frieren also has original prominent film grain in the Blu-ray source only in certain parts of areas of scenes like in the sky. I compare it to a screenshot of the Netflix AV1 encoded version where you can see Netflix retains line work detail well, but obliterates the strong film grain aesthetic. This is due to the bitrate being quite low averaging 1,468 kbps which is likely around CQ 40 or higher. In my testing I found flim grain synthesis does not work on such videos with **grain in only certain areas of the screen** where it has been artifically placed in production. Therefore the AV1 NVENC command I have provided in theory (can't legally encode DRM protected content) will do a better job than Netflix at retaining some grain and original line work with a reasonable file size output. **Don't forget** the main benefit of encoding AV1 NVENC is the extremely fast encoding speed.
+
+Download a PNG side by side screenshot of the source vs the SVT-AV1 with grain synthesis compressed version to see the difference:
+
+<ImageDownloadLink 
+  thumbnail="/img/BDvsNetflix-preview.avif" 
+  fullRes="/img/BDvsNetflix-highres.png"
+  alt="Preview of the full-res side by side comparison"
+/>
+
+---

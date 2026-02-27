@@ -1,0 +1,22 @@
+To install the latest Git version of FFmpeg on Fedora Linux, you'll need to build it from source, because the version in Fedora’s default repositories is often not the latest. However an up-to-date stable build is installed through RPM Fusion. RPM Fusion is a third-party Fedora repository that makes it easy to install a fully-featured version of FFmpeg (with popular codecs) via `dnf`, without needing to build it from source.
+
+1. Download FFmpeg:
+
+```bash title="Enable RPM Fusion (Free + Non-Free):
+sudo dnf install \
+  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+```
+
+2. Install FFmpeg:
+
+```bash
+sudo dnf install ffmpeg ffmpeg-devel
+```
+
+3. Test and check the version and what's enabled:
+
+```bash
+ffmpeg -version
+```
+

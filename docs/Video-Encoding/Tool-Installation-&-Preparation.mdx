@@ -1,0 +1,152 @@
+---
+sidebar_position: 1
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Tool Installation & Preparation
+
+## FFmpeg Installation by Platform
+FFmpeg (command line program) is a powerful open-source tool that lets us encode (convert) audio and video in a wide range of formats as well as remux and add metadata. It can also be used for video filtering and adding effects. Specific to this guide: For unmatched encoding speeds using NVIDIA GPU-accelerated AV1 encoding, I recommend FFmpeg.
+
+### Windows
+
+1. Download a build of [FFmpeg](https://ffmpeg.org/download.html). Click on "gyan.dev" builds link and download the latest git-full version (
+ffmpeg-git-full.7z), which has all the latest features and updates. Extract `ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe` and place them in a permanent location of your choice, like `C:\FFmpeg` or `C:\Portable\FFmpeg`.
+
+2. Make FFmpeg Available System-wide. Ensure that the location of `ffmpeg.exe` is included in your system-wide "Path" variable so you can run it from the terminal (CMD on Windows) without needing to be inside the ffmpeg.exe folder. On Windows, search for and open "Edit the system environment variables".
+Click on Environment Variables → System variables → Path → Edit → New.
+Then, paste in the folder path of FFmpeg on your PC.
+
+![add to Path](/img/environment_variables-tut.png) Figure 1.
+
+:::tip To Open Command Prompt on Windows
+Press the `Windows key 🪟` to open Start Menu. Type `cmd` and press `Enter` to open it.
+:::
+
+3. Test FFmpeg. Do a basic check that FFmpeg is installed system-wide. Open Command Prompt and type, `ffmpeg`. The version and available libraries including `av1_nvenc` will be listed. You are now ready to start encoding video, audio and more with FFmpeg.
+
+### Mac
+
+1. Download a build of [FFmpeg](https://ffmpeg.org/download.html), FFprobe and FFplay. The latest git versions have all the latest features and updates. 
+
+2. Make FFmpeg Available System-wide. Extract the downloaded binaries (files `ffmpeg`, `ffprobe`, `ffplay`) to somewhere safe — like:
+`/usr/local/bin/`
+Then, open the terminal and enter:
+```bash
+sudo mv ~/Downloads/ffmpeg /usr/local/bin/
+sudo mv ~/Downloads/ffprobe /usr/local/bin/
+sudo mv ~/Downloads/ffplay /usr/local/bin/
+
+sudo chmod +x /usr/local/bin/ffmpeg
+sudo chmod +x /usr/local/bin/ffprobe
+sudo chmod +x /usr/local/bin/ffplay
+```
+(Replace `~/Downloads/ffmpeg` with the path to wherever your downloaded file is.)
+
+:::tip To Open Terminal on macOS 
+Type `Command (⌘) + spacebar` to open Spotlight. Type `Terminal` and press `Return` to open it.
+:::
+
+3. Test FFmpeg. Do a basic check that FFmpeg is installed system-wide. Open Terminal and type, `ffmpeg`. The version and available libraries including `av1_nvenc` will be listed. You are now ready to start encoding video, audio and more with FFmpeg.
+
+### Linux
+
+```mdx-code-block
+import Arch from "./ffmpeg-install/_Arch.mdx";
+import UbuntuDebian from "./ffmpeg-install/_Ubuntu-Debian.mdx";
+import Fedora from "./ffmpeg-install/_Fedora.mdx";
+
+<Tabs className="custom-tabs" queryString="platform">
+
+	<TabItem value="arch" label="Arch" default>
+		
+        <Arch/>
+
+	</TabItem>
+
+	<TabItem value="ubuntu-debian" label="Ubuntu/Debian">
+
+        <UbuntuDebian/>
+
+	</TabItem>
+
+	<TabItem value="fedora" label="Fedora">
+
+        <Fedora/>
+
+	</TabItem>
+
+</Tabs>
+```
+
+:::tip 
+If you want to build and configure FFmpeg yourself, follow the official compilation guides: [Ubuntu/Debian](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu), [Fedora](https://trac.ffmpeg.org/wiki/CompilationGuide/Centos), [Arch](https://aur.archlinux.org/packages/ffmpeg-full-git?utm_source=chatgpt.com) and [Arch Wiki on AUR](https://wiki.archlinux.org/title/Arch_User_Repository): For more detailed information on building packages from the AUR. 
+:::
+
+## Av1an Installation
+
+Slower, CPU-based encoding offers superior compression efficiency compared to hardware-accelerated encoding, at the cost of longer processing time. Av1an mitigates this by using chunk-based parallel encoding, running multiple encoder instances simultaneously to reduce overall encoding time.
+
+:::note compression efficiency
+
+Compression efficiency in video codecs refers to how effectively a codec can reduce the file size of a video while maintaining visual quality. A codec with higher compression efficiency produces smaller files with equal or better quality compared to less efficient codecs.
+
+:::
+
+### Step 1: Download Av1an
+- Read Av1an's notes about usage, documentation, installation: [Av1an Home Page](https://github.com/rust-av/Av1an). 
+- If on Windows, download the [latest (pre-release) build of Av1an](https://github.com/rust-av/Av1an/releases) in the "assests" drop down.
+- Place `av1an.exe` in a permanent location of your choice, like "C:\Av1an" or "C:\Portable\Av1an".
+
+### Step 2: Include the Av1an location in Path
+Include the location of `av1an.exe` in your system-wide "Path" variable so you can run it from the terminal (CMD on Windows) without needing to be inside the `av1an.exe` folder. See Figure 1 for details.
+
+### Step 3: Obtain Av1ans Dependencies
+Inside the Av1an folder you have created, you must place:
+- One encoder. My guide shows how to encode with [SVT-AV1](https://gitlab.com/AOMediaCodec/SVT-AV1), so you will need `SvtAv1EncApp.exe` and `SvtAv1EncApp.dll`. Builds by the encoding community are not currently up to date, so I recommend you build SVT-AV1 from the source. First clone the SVT-AV1 repository onto your local machine, and then follow the [SVT-AV1 build instructions](https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md). Then place `SvtAv1EncApp.exe` as well as `SvtAv1EncApp.dll` directly in your Av1an folder. On Linux they are named, `SvtAv1EncApp` + `libSvtAv1Enc.so`.
+
+```bash title="Clone the SVT-AV1 repository:"
+git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git
+```
+- [FFmpeg](https://ffmpeg.org/download.html) (full shared version). You may already have the latest git version of FFmpeg, but Av1an requires you have a "full shared" build of it that includes `.dll` dependancies.
+
+Optional:
+- [VapourSynth](https://github.com/vapoursynth/vapoursynth/releases) must be installed with the `vapoursynth.dll` location visible in your system-wide "Path" variable (See Figure 1), if you want to use:
+    - VapourSynth scripts as input. Example: `video-filtered.vpy`.
+    - [L-SMASH](https://github.com/HomeOfAviSynthPlusEvolution/L-SMASH-Works) VapourSynth plugin for Av1an's recommended chunking method.
+[Official VapourSynth installation guide](https://vapoursynth.com/doc/installation.html).
+- [mvkmerge](https://mkvtoolnix.download/). Place `mkvmerge.exe` in your Av1an folder as well, to use it instead of FFmpeg for file concatenation.
+
+![Av1an folder](/img/Av1an-folder.png) Figure 2.
+
+## Creating a Short Test Clip
+
+Before you encode a full length video, test your FFmpeg and Av1an commands. Create a 10 second test clip snippet with both low and high motion scenes, copied from the source. Videos can only be losslessly trimmed at selected keyframe points, not at each frame. There are two GUIs that make this quick and simple:
+[LosslessCut](https://github.com/mifi/lossless-cut/releases) (preferred) or [Avidemux](https://avidemux.sourceforge.net/download.html).
+
+## mpv for Video Playback
+
+Download: [mpv](https://mpv.io/). Make sure to get a build with the mpv executable, **not** just `mpv.dll` etc. libraries used for embedding. Mpv is widely considered the best video player for cutting-edge codecs like AV1 and VVC (H.266) due to:
+- Hardware Acceleration Support
+- FFmpeg backend
+- High customizability
+- Supports cutting-edge codec updates quickly
+- Open-source
+- Lightweight architecture
+- HDR support:
+	- Ensure HDR is enabled in you monitor settings and OS settings
+	- You can verify HDR metadata with `Shift + I`. Ensure `pix_fmt`, `color_primaries`, etc. match those of the input video. 
+	- For native HDR output (passthrough) you need to add to `mpv.conf`. If you downloaded a portable mpv package, make a folder in the same directory as the `mpv` binary called `portable_config` and inside it create `mpv.conf`. Then add:
+```ini title="mpv.conf (HDR Passthrough Config)"
+vo=gpu-next
+gpu-api=vulkan
+tone-mapping=hdr-pass
+target-peak=0
+hdr-compute-peak=yes
+dither-depth=auto
+```
+:::info 
+Without enabling HDR support in mpv as described above, HDR videos will playback as SDR.
+:::
+---

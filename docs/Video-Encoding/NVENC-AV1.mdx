@@ -1,0 +1,108 @@
+---
+sidebar_position: 4
+---
+
+# NVENC AV1
+
+## NVIDIA GPU-Accelerated AV1 Encoding
+:::info Required
+Any NVIDIA GPU from 2022 onwards supports hardware-accelerated AV1 encoding, such as the GeForce RTX 40 Series (Ada Lovelace) and the NVIDIA RTX 6000 Ada (Professional GPU).
+:::
+**Encoding speed** of dual NVENC chip graphics cards, such as the RTX 4070 Ti is faster than a single NVENC chip GPU, such as the RTX 4070 Super. A 1080p 24fps video encodes at 340 fps average on my 4070 Super with Ultra Quality tuning, and "very slow" preset! While the same video encodes at 18fps for SVT-AV1 at preset 3 using Av1an. The Av1an CLI encoder is the second fastest encoding method currently possible, as it splits the video into chunks for parallel encoding utilizing only the CPU and RAM. NVENC is primarily designed for real time encoding for recording and streaming, but it is also valuble for regular encoding because of the great amount of time it can save! The trade off is the output video is genereally larger for the same visual quality as that of CPU encodes.
+
+1. Ensure you already have installed FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
+
+3. The following command is a starting point provides high-quality encoding for most videos, preserving detail efficiently while keeping file sizes manageable:
+
+```bash
+ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i video_input.mkv -map 0 -c:v av1_nvenc -cq 30 -spatial-aq 1 -temporal-aq 1 -preset p7 -tune hq -rc-lookahead 32 -an video_output.mkv
+```
+## Breakdown of the Command
+
+### Base Command & Input
+
+    - `ffmpeg`: The command-line tool for processing multimedia files.
+
+    - `-y`: Optional. Overwrites the output file without prompting if one exists.
+
+    - `-hwaccel cuda`: Uses NVIDIA CUDA for hardware-accelerated decoding.
+
+    - `-hwaccel_output_format cuda` Keeps the decoded video frames in CUDA memory (faster GPU-to-GPU processing).
+
+    - `-i video_input.mkv`: Specifies the input file. Specify the path to the file location.
+
+### Stream Mapping & Output Configuration
+
+    - `-map 0`: Includes all streams (video, audio, subtitles, etc.) from the input. **If you get an error in the terminal, exclude this**.
+
+### Video Encoding Settings
+
+    - `-c:v av1_nvenc`: Uses NVIDIA's AV1 hardware encoder for the video stream.
+
+    - `-cq 30`: Sets constant quality mode with a CQ (Constant Quantizer) value of 30 (higher = more compression, lower quality). A value of 30 is a good balance of detail preservation/quality and resonable file size. If you are going for visully lossless for archiving I would not go lower than CQ 16 unless you are ok with large file sizes.  
+
+    - `-spatial-aq 1`: Enables spatial adaptive quantization (improves detail in complex areas).
+
+    - `-temporal-aq 1`: Enables temporal adaptive quantization (adjusts quality over time to maintain visual consistency).
+
+    - `-preset p7`: Encoding speed/quality trade-off. p7 is the slowest and highest quality preset for NVENC. The lower the value the worse compression efficiency(ch this ). So the larger the output file with lowered visual quality.
+    For example: using -preset p5 in the command above on 1080p 24fps vidoe resulted in ...encode time, ...file size, and ... noticable visual quality reduction. 
+
+    - `-tune hq`: Tunes the encoder for high quality output (alternative to low-latency, etc.).
+    Using low-latency will resut in a faster encode, but greatly bloats the file size. While `-tune uhq`, which was introduced in Feb 2025, will shrink some videos by more than 50% in my testing. While some video files only shrink by 5% for **the same** visual quality. The trade off with using -tune uhq is the encode time increased by about 4 times on average in my testing. That is still a fast encode. A 1080p 24fps video will encode at about 90 fps!
+
+    - `-rc-lookahead 32`: Sets rate control lookahead to 32 frames (helps the encoder decide how to allocate bits more effectively). `-rc-lookahead 60`: Maximize temporal analysis — ideal for slow pans, fades, and static scenes like anime. Using values lower than 32 does not speed up encoding time in my testing on my RTX 4070 Super.
+
+### Audio & Subtitle Handling
+
+    - `-an`: Removes audio from the output file.
+    Optionally,
+    - `-c:a libopus -b:a 128k` will convert you audio to Opus at 128kbps. Which can be convinient if you are encoding numerous episodes or videos.
+    See [Audio Format & Bitrate](http://localhost:3000/category/audio-format-bitrate) if you would like help determining what format and bitrate is suitable for your 
+    Stereo or Surround audio. NOTE SHOW MY GRAPH of AUDIO CODECS!
+    
+### Output File
+
+    - `video_output.mkv`: Specifies the name of the output file.
+
+:::note Only RTX 50 series GPUs support YUV422 input
+RTX 50 series GPUs, introduce the 9th-generation NVENC encoder. This updated encoder adds support for YUV422 chroma subsampling in AV1 encoding, accommodating both 8-bit and 10-bit depths. You can still encode 10-bit YUV420 with RTX 40 series GPUs.
+:::
+
+## Comparisons
+
+Here is a side by side comparison of the encoded AV1 output from the example command beside the 4K (UHD) source. The main difference you will notice is that the NVENC AV1 version partially smoothes the film grain. However what it retains is just enough to enjoy some grain aesthetic. Some frames have more smoothed out grain that others creating inconsistency of grain prominence, but it's less noticable during playback. Retaining original grain is for the most part not a good idea if you want small output files as the file increasingly grows with using lower compression settings. With VVenC, Aomenc (AV1) or SVT-AV1 film grain synthesis is an option to solve the issue of adding grain without bloating the file size. Because this example has **consistent grain across every scene**, you could encode with VVenC or SVT-AV1 instead and use film grain synthesis if you want to reduce the file size further. The file size of the original 10 second UHD HEVC clip was **541 MB** (no audio) **and** the NVENC AV1 encode was **37.2 MB** (no audio)!
+ 
+Download a PNG side by side screenshot of the source vs the AV1 NVENC compressed version to see the difference:
+
+import ImageDownloadLink from '@site/src/components/ImageDownloadLink';
+
+<ImageDownloadLink 
+  thumbnail="/img/4kSource_vs_NVENCAV1-preview.avif" 
+  fullRes="/img/4kSource_vs_NVENCAV1.png"
+  alt="Preview of the full-res side by side comparison"
+/>
+
+In another example below, the anime, Sousou no Frieren also has original prominent film grain in the Blu-ray source only in certain parts of areas of scenes like in the sky. I compare it to a screenshot of the Netflix AV1 encoded version where you can see Netflix retains line work detail well, but obliterates the strong film grain aesthetic. This is largely due to the bitrate being quite low averaging 1,468 kbps which is likely around CQ 40 or higher. In my testing I found flim grain synthesis does not work on such videos with **grain in only certain areas of the screen** where it has been artifically placed in production. Therefore the NVENC AV1 command I have provided in theory (can't legally encode DRM protected content) will do a better job than Netflix at retaining some grain and original line work with a reasonable file size output. **Don't forget** the main benefit of encoding NVENC AV1 is the extremely fast encoding speed while still achieving better compression efficiency than NVENC HEVC or NVENC H.264.
+
+Download a PNG side by side screenshot of the Blu-ray source (`.iso`) vs Netflix AV1 compressed version to see the difference:
+
+<ImageDownloadLink 
+  thumbnail="/img/BDvsNetflix-preview.avif" 
+  fullRes="/img/BDvsNetflix-highres.png"
+  alt="Preview of the full-res side by side comparison"
+/>
+
+:::tip Netflix A/V Stats Overlay
+When viewing a Netfix show or movie in your browser, press `Ctrl` + `Shift` + `Alt` + `D` to find out what video and audio codec is playing back and more. Sousou no Frieren is AV1.
+:::
+
+---
+
+Next up: I will show you how to add metadata within the same FFmpeg command and remux for better organization, playback compatibility, or archival purposes.
+
+
+
+
+
+

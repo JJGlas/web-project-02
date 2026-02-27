@@ -1,0 +1,97 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.kofi-icon {
+  background-image: url('/img/kofi_symbol.svg');
+  margin-right: 0.75rem; /* equivalent to 12px */
+  background-size: cover;
+  width: 1.9rem; 
+  height: 1.5rem; /*24px*/
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.kofi-icon:hover {
+  transform: rotate(10deg);
+}
+
+/* Allow normal left-to-right layout */
+.navbar__items--right {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Ensure specific items appear where you want */
+.navbar-item-kofi {
+  order: 1;
+}
+
+.theme-toggle {
+  order: 2;
+}
+
+.navbar-item-search {
+  order: 3;
+}
+
+/* New items without order class will default to order: 0 and appear before ordered items */
+
+
+/* Base style resembling h3 (###) 
+.tab-section-title {
+  font-size: 1.5rem; 
+  font-weight: 700; 
+  line-height: 1.25;
+  margin: 1.5rem 0 1rem;
+  scroll-margin-top: var(--ifm-navbar-height);
+  color: var(--ifm-heading-color);
+  font-family: var(--ifm-heading-font-family, var(--ifm-font-family-base));
+}
+*/
+/* Modifier for h4-style (####) 
+.tab-section-title.small {
+  font-size: 1.25rem; 
+  font-weight: 600; 
+  line-height: 1.4;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--ifm-heading-font-family, var(--ifm-font-family-base));
+}
+*/
+
+/* Optional: Hover effect 
+.tab-section-title:hover {
+  text-decoration: underline;
+  cursor: default;
+}
+*/
+
+

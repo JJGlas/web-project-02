@@ -1,0 +1,124 @@
+---
+sidebar_position: 6
+---
+
+# Metadata & Remuxing
+
+## Get Started
+
+### Check What Metadata the Video Already Contains
+Download: [MediaInfo](https://mediaarea.net/en/MediaInfo). Use it to check if the M2TS(`.m2ts`) or Matroska(`.mkv`) video file has any streams or metadata you want to add or exclude.
+MediaInfo metadata example:
+
+![MediaInfo](/img/MediaInfo.png)
+
+### Create a Short Test Clip
+Before you encode a full length video, test your encode commands. Create a 10 second test clip snippet with both low and high motion scenes, copied from the source. Videos can only be losslessly trimmed at selected keyframe points, not at each frame. There are two GUIs that make this quick and simple:
+[LosslessCut](https://github.com/mifi/lossless-cut/releases) (preferred) or [Avidemux](https://avidemux.sourceforge.net/download.html).
+
+### Use mpv for Video Playback
+
+## Add Useful Metadata
+You can add useful metadata to the streams (video, audio, subtitles) in your Matroska (.mkv) file either as part of your initial FFmpeg command or afterward with a separate one. This skips the step of using a GUI (MKVToolNix) to do the same task for each encoded video. I like to add the following to my encodes:
+- Existing subtitles
+- Exisiting HDR metadata if present
+- Video language
+- Audio language
+- Encoder settings
+- Comments, about the source and who the encode was done by (me) 
+
+### Metadata FFMPEG Parameters
+
+    `-c:s copy`: Copies subtitles as-is from the input to the output without re-encoding. Even though we have `-map 0` as part of the example command, we still need `-c:s copy` to avoid FFmpeg re-encoding subtitles using the default codec.  
+
+    `-map_metadata 0`: Copies all metadata from the input to the output, including any HDR metadata that may be present.
+
+    `-metadata:s:v:0 language="jpn"`: Sets the language metadata for the first video stream to show the source was a Japanese release.
+
+    `-metadata:s:a:0 language=jpn -disposition:a:0 default -metadata:s:a:1 language=eng -disposition:a:1 0`: This will label the first audio stream as Japanese and flag it as default. Then the second audio stream is labled as english and not default. In my full encode command example, I specify `-an` which excludes audio altogether as it can be encoded seperately and added in later with MKVToolNix.
+
+    `-metadata:s:v:0 encoder_settings="[your settings here]"`: Paste your whole ffmpeg or av1an command or main parameters here if you want to add it as metadata to the first video stream. 
+    
+    `-metadata:s:v:0 comment="Encoded by Me. Source: Blu-ray"`: Adds a comment metadata tag to the first video stream.
+
+Our original FFmpeg command for encoding av1_nvenc with added metadata:
+
+```bash title="The metadata portion in seperate highighting:"
+# highlight-start
+ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i video_input.mkv -map 0 -c:v av1_nvenc -cq 30 -spatial-aq 1 -temporal-aq 1 -preset p7 -tune hq -rc-lookahead 32
+# highlight-end
+-c:s copy -map_metadata 0 -metadata:s:v:0 encoder_settings="[your settings here]" -metadata:s:v:0 comment="Encoded by Me. Source: Lossless Master" -metadata:s:v:0 language="jpn" -an  video_output.mkv
+```
+
+Say you encoded your video with Av1an instead. You can now add the additional metadata with the following command:
+
+```bash
+ffmpeg -i av1an_encoded_output.mkv -c copy -metadata:s:v:0 encoder_settings="[your settings here]" -metadata:s:v:0 comment="Encoded by Me. Source: Lossless Master" -metadata:s:v:0 language="jpn" -metadata:s:v:0 title="Video Title" metadata_encoded_output.mkv
+```
+## HDR Metadata
+:::tip tip
+
+To check if your video is playing back in HDR press `Shift + I` in [mpv](https://mpv.io/), which is my recommended player. Ensure "pix_fmt", "color_primaries", etc. match those of your input video. 
+
+:::
+### With FFmpeg 
+It is crucial to copy over existing HDR metadata to your new encode if you want to preserve it. As I mentioned earlier this is easily done with the FFmpeg command, `-map_metadata 0`.
+
+### With Av1an
+Preserving HDR metadata when encoding requires specify HDR metadata values. 
+
+    1. You must specify Chroma sample position with Av1an. Check the chroma position of the source with:
+    ```bash
+    ffprobe -show_streams -select_streams v:0 4k_HDR_input.m2ts
+    ```
+    Scroll down in the terminal and find `chroma_location=topleft`. If it's missing, that means it's unspecified.
+
+    2. Set the same value in your encoder: `--chroma-sample-position topleft` for Av1an. If FFmpeg or ffprobe doesn't report a chroma sample position, set the chroma sample position to **topleft**, as this is the **most standard** for HDR10 content.
+
+    3. Encode a test clip with my FFmpeg command. Part of the teminal output lists the specific input HDR metadata:
+
+    `VUI            matrix:bt2020nc,colorprim:bt2020,transfer:smpte2084
+    MasteringDisp  G(0.170000 0.797000) B(0.131000 0.046000) R(0.708000 0.292000)
+                    WP(0.312700 0.329000) L(1000.000000 0.000100)
+    MaxCLL/MaxFALL 501/230` 
+
+    4. Copy it from the terminal. With a slight reformatting of the syntax, you can now implement it into your Av1an command like so:
+
+```bash title="The HDR metadata portion in seperate highighting:"
+# highlight-start
+av1an -i "4k HDR input.mkv" -e svt-av1 -v " --crf 22 --preset 3 --film-grain 6 --adaptive-film-grain 1 --noise-norm-strength 1 --sharpness 1 --progress 2 --enable-qm 1 --qm-min 8 --chroma-qm-min 8 --keyint -2 --enable-tf 1 --tf-strength 0 --kf-tf-strength 0 --enable-dlf 2 --enable-cdef 0 --tune 2 --aq-mode 2 --variance-octile 6 --variance-boost-strength 2 --qp-scale-compress-strength 1
+# highlight-end 
+--chroma-sample-position topleft --color-primaries bt2020 --transfer-characteristics smpte2084 --matrix-coefficients bt2020-ncl --mastering-display G(0.170000,0.797000)B(0.131000,0.046000)R(0.708000,0.292000)WP(0.312700,0.329000)L(1000.000000,0.000100) --content-light 501,230 " -w 10 -m lsmash -c mkvmerge -l log -an -o "4k HDR output.mkv"
+```
+    5. **Confirm** with MediaInfo that the HDR metadata of the output matches that of the input video.
+
+
+## Remuxing with MKVToolNix
+
+For including and excluding different audio tracks, subtitles, chapter files, setting defaults I like to use MKVToolNix for the GUI aspect.
+
+### Step 1: Download MKVToolNix
+Download: [MKVToolNix](https://mkvtoolnix.download/downloads.html).
+
+### Step 2: Add & Exclude Streams
+
+### Step 3: Add Attatchments
+
+Common attachments I like to append to my Matroska (.mkv) video are:
+- Cover art: In MKVToolNix, click on `Multiplexer` → `Attachments` and drag in a `cover.jpg` image. It must be named "cover" and in JPEG format. The result:  
+
+![Cover art example](/img/cover-art-ex.avif)
+
+- Chapters: These are in `.xml`. 
+
+### Step 4: Check & Fix Audio Sync if Needed
+
+If audio playback appears to be out of sync because you have added a different audio track in to the Matroska (.mkv), it can often be corrected perfectly. Often this is because different releases of the same show or movie sometimes slightly differ in length due to excluded/included scenes at the start or end of the movie/show.
+- Check the exact length down to the milliseconds of the video or audio track that you want to mux in and compare it to the original's with ffprobe:
+```bash title="ffprobe Command to Reveal Duration Down to 6 Digit Milliseconds"
+ffprobe -v error -show_format -sexagesimal input.mkv
+```
+- Next simply subtract the shorter streams duration from the longer stream to see the difference in milliseconds (ms). Example: `00:05:20.000000` - `00:05:00.020021` = `19.979979` seconds which is `19980` ms. So type this value into MKVToolNix under Multiplexer → Properties → Delay (in ms) to delay the audio thus creating perfect sync with the newly added audio track!
+
+---
+

@@ -1,0 +1,21 @@
+1. Download FFmpeg and make it available system-wide:
+
+```bash title="Community‐maintained PPA FFmpeg Git"
+sudo add-apt-repository ppa:savoury1/ffmpeg-git
+sudo apt update
+sudo apt install ffmpeg
+```
+
+2. Test and check the version and what's enabled:
+
+Specifically, ensure `av1_nvenc`, `libsvtav1` and `libopus` are enabled.
+
+```bash
+ffmpeg -version
+```
+
+
+
+
+
+

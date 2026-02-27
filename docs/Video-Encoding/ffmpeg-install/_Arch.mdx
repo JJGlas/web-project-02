@@ -1,0 +1,27 @@
+1. Download FFmpeg and make it available system-wide:
+
+```bash title="Bleeding-edge (Git) Arch Linux build of FFmpeg"
+yay -S ffmpeg-git
+```
+
+Or:
+
+```bash title="Official Arch Linux build of FFmpeg"
+sudo pacman -S ffmpeg
+```
+
+2. Test and check the version and what's enabled:
+Ensure `av1_nvenc`, `libsvtav1` and `libopus` are enabled.
+
+```bash
+ffmpeg -version
+```
+
+Or:
+
+```bash title="Build FFmpeg Git Yourself"
+git clone https://aur.archlinux.org/ffmpeg-full-git.git
+cd ffmpeg-full-git
+makepkg -si
+```
+

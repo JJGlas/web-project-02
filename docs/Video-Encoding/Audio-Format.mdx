@@ -1,0 +1,156 @@
+---
+sidebar_position: 2
+---
+
+# Audio Format
+
+## Choosing the Right Format for Stereo & Surround
+
+To keep things simple, here are my rules of thumb when choosing which audio format to mux with a video or to encode from the lossless source (usually audio tracks from the Blu-ray):
+
+- **Ideally**, **E-AC-3 JOC (Dolby Digital Plus with Atmos)** or **DTS:X** (a similar format) audio from streaming services like Netflix provides the best home theater multichannel audio experience while keeping file sizes relatively compact.
+  - Requires a commercial license and encoding tools. **Only Dolby Labratories and DTS, inc** can encode these audio tracks **while preserving** the Joint Object Coding (JOC). JOC requires advanced engineering that positions audio as individual objects in 3D space, requiring precise mixing and spatial metadata to control height, direction, and movement across speakers or headphones.
+  - A bitrate of 768k is used for Atmos with 5.1 base and 1024k for Atmos with 7.1 base.
+  - Add `audio-spdif=eac3` to your `mpv.conf`. This is important to ensure your **AV receiver** decodes JOC (spatial audio objects).  
+:::danger danger
+
+Piracy is illegal in most countries, and I do not endorse it. 
+
+:::
+
+- **AC-4 audio** is even better, but requires an `ffmpeg` build with AC-4 support for `mpv` playback. Dolby claims:  
+  > "Equivalent experiences at half the bitrate of E-AC-3."
+  - Closed-source
+- **Opus (`opusenc or libopus`)**:
+  - Open-source
+  - Use for stereo at **64–128 kbps**
+  - Use for 5.1 surround at **192–256 kbps**
+  - Use for 7.1 surround at **320–448 kbps**
+- **Dolby Digital Plus (`E-AC-3`)**:  
+  - Ideal for all 5.1 and 7.1 sources with side channel mapping
+  - Best suited for AV receivers  
+  - High quality but results in larger file sizes. Still much smaller that lossless TrueHD surround etc.  
+  - Note: `ffmpeg` down-converts 7.1 to 5.1, so one would need **Dolby Encoding Engine (DEE)** with **DEEW** (open source project) intergration, if you want to preserve 7.1. However DEE requires a commercial license issued by Dolby Laboratories or their licensing partners.
+- **FDK-AAC (`fdkaac` or `libfdk_aac`)**:
+  - Semi-open-source, with restrictions 
+  - Best for 2-channel TV audio at bitrates over **160 kbps**
+- **xHE-AAC (`exhale`)**: 
+  - Open-source. The latest version can be downloaded [here](https://www.free-codecs.com/exhale_download.htm). 
+  - Outperforms Opus at very low bitrates (24–80 kbps stereo)  
+  - Encode via command line or foobar2000 GUI. Paid program, **Poikosoft EZ CD Audio Converter** (supports Fraunhofer IIS xHE-AAC)
+- **MPEG-H Audio**:
+  - Semi-open source, with restrictions   
+  - Does not currently support muxing with AV1, Matroska (.mkv) or playback in `mpv`  
+  - Ideal for compact 5.1/7.1 audio when paired with VVC  
+  - Offers better quality and compression than Opus or HE-AAC
+- **CoreAudio AAC (`QAAC64`)**:
+  - Installation of iTunes activates your license  
+  - Best for encoding music at bitrates of **160 kbps and higher**  
+  - Easiest to use via **foobar2000** or **Poikosoft EZ CD Audio Converter**
+
+---
+
+## Example Commands
+
+### E-AC-3
+
+**DTS or TrueHD 7.1, 5.1 to E-AC-3 5.1 conversion** (7.1 output is not possible without DEE as mentioned earlier):
+
+```bash
+ffmpeg -i input.dts -c:a eac3 -b:a 640k -dialnorm -31 -ac 6 -dsur_mode 2 -ar 48000 output.eac3
+```
+    - [FFmpeg](https://ffmpeg.org/download.html) includes an implementation that allows encoding/decoding E-AC-3.
+    - A bitrate of 448k, 512k or 640k is suitable for 5.1 channel audio. 768k or 1024K is used for 7.1(8ch) audio.  
+    - `dsur_mode 2`: Tells the encoder to use Dolby Surround (Lt/Rt) mode for compatibility with stereo (2.0) playback
+    - `dialnorm -31`: Is 0 volume reduction for playback levels for dialogue. Dolbys formula: Volume Reduction (dB)=DialNorm+31
+    - Many consumer devices (AV receivers and soundbars) will decode E-AC-3 natively and preserve surround effects properly. 
+    - If you have MPV playing your video on a PC connected to an AV receiver via HDMI add, `audio-spdif=eac3` to your `mpv.conf`. This is important to ensure the AV reciever decodes E-AC-3 audio and not the software, as it:
+      - Ensures Dolby metadata like dialnorm (dialogue volume levels) and DRC (dynamic range compression) are applied correctly. Though it is widely recommended to disable DRC in your AV receiver's settings.
+      - Ensures proper Dolby Digital Plus decoding by the AV receiver. 
+      - Preserves accurate surround sound placement and effects.
+      - Avoids software resampling or audio degradation in MPV.
+      - Reduces CPU usage by offloading decoding to the receiver.
+ 
+### Opus
+**Opus 2.0, 5.1 & 7.1 with `opusenc`:** 
+    ```bash
+    ffmpeg -i input.thd -f wav - | opusenc --bitrate 128 - output.opus
+    ```
+    - This is the official Opus encoder. The latest version can be downloaded [here](https://www.free-codecs.com/opus_audio_codec_download.htm).
+    - Uses opusenc.exe by converting to WAV with ffmpeg, then piping the WAV to opusenc.
+    - opusenc retains better picture attachments, metadata, and is newer than FFmpeg’s libopus.
+    - Using opusenc without piping from ffmpeg only works if the input format is WAV.
+    
+    **If `ffprobe` shows that the input is 24 bit and not 16-bit:**
+    ```bash
+    ffmpeg -i "input.thd" -c:a pcm_s24le -f wav - | opusenc --bitrate 128 - output_6ch.opus
+    ```
+    - Opus does not support `5.1(side)`, as it maps `Ls Rs` to `Lb Rb`. 
+    - It does not matter! **MPV remaps** these back channels to side channels, and playback works perfectly on surround systems.
+### libopus (FFmpeg's implementation of Opus)    
+    **Use `libopus` in your FFmpeg command if you want to avoid external muxing of audio into your `.mkv` video:**
+    ```bash
+    ffmpeg -i input.mkv -c:a libopus -b:a 128k output.mkv
+    ```
+    - This is placed at the end of your FFmpeg command right before `output.mkv`.
+    - Time saving and convenient when encoding a tv series of many episodes, or if your source only has 2 channel audio.
+
+    **If the video has multiple audio streams:**
+    ```bash
+    -c:a libopus -ac:0 -b:a:0 192k -ac:1 -b:a:1 288k
+    ```
+    **To copy audio (not re-encode):**
+    ```bash
+	  -c:a copy
+    ```
+	  **To export only the video and skip the audio:**
+    ```bash
+	  -an
+    ```
+    **To avoid the 5.1(side) error with the Opus codec when using libopus, add the following to the audio portion of your command:**
+    ```bash
+    -filter:a "channelmap=FL-FL|FR-FR|FC-FC|LFE-LFE|SL-BL|SR-BR:5.1"
+    ```
+### Audio Syntax with Av1an (Command-Line Encoding Front-End)
+    Av1an uses FFmpeg to encode audio with the `-a` flag:
+    ```bash
+    -a " -c:a libopus -b:a 128k " 
+    ```  
+    - This is placed at the end of your Av1an command right before `-o output.mkv`.
+---
+
+## Graph
+
+The graph is based on research papers that include subjective quality assessments with Multiple Stimuli with Hidden Reference and Anchor (MUSHRA) or  Degradation Mean Opinion Score (DMOS) data recorded from controlled listening tests. "Degradation is audible but not annoying" and "excellent" scores are considered to be around 4.0/5 for DMOS and 89–90/100 MUSHRA respectively. Though, "tolerable perceived quality depends strongly on the music characteristic" [5]. So, unfold degradation maybe less audible than string quartet and so on; when listening to these bitrates which are slightly below acoustic transparency. The graph displays:
+
+- E-AC-3 (5.1) – Transparent above roughly 75 kbps per channel (≈448 kbps total for 6 channels) [1]
+
+- AAC-LC (FDK, 5.1) – Transparent above roughly 53 kbps/ch (≈320 kbps total for 6 channels) [2]
+
+- HE‑AAC (FDK, 5.1) – Transparent above roughly 27 kbps/ch (≈160 kbps total for 6 channels) [2]
+
+- MPEG-H 3D audio (5.1) - Transparent above roughly 27 kbps/ch (≈160 kbps total for 6 channels) [3]
+
+- AC-4 (5.1) - Transparent above roughly 27 kbps/ch (≈160 kbps total for 6 channels) [4]
+
+- Opus (5.1) - Transparent above roughly 32 kbps/ch (≈192 kbps total for 6 channels) [5]
+
+I would recommended encoding with a standard bitrate value that is one or two steps higher than the graph values if you want truly imperceptible acoustic transparency. Example for 5.1 surround: Opus 256 kbps over 192 kbps or E-AC-3 640 kbps (common on Netflix) over 448 kbps. 
+
+:::note note
+
+The `.1` (LFE) channel actually consumes much less bitrate than a full‑range channel — sometimes ⅛ to ⅓ as much. So for example, 192 kbps total is not truly 6 × 32 kbps, but more like 5 × 35 + 1 × 10, depending on encoder implementation. 
+
+:::
+
+### References:
+
+- [1] - EBU Project Group B/MAE. *EBU Tech 3324 – Evaluations of Multichannel Audio Codecs.* (2007). Lists 5.1‑channel Dolby Digital Plus (E‑AC‑3) at 448 kbps as receiving **no sample** below “Excellent” (≥ 80/100) in Phase 2 MUSHRA testing. [PDF](https://tech.ebu.ch/docs/tech/tech3324.pdf)
+
+- [2] Fraunhofer IIS. *AAC Audio for Broadcast and Streaming: State of the Art Audio Codecs for High Quality Audio Services.* White paper. [Link](https://www.iis.fraunhofer.de/content/dam/iis/de/doc/ame/wp/FraunhoferIIS_White-Paper_AAC-Broadcast-CableTV.pdf)
+
+- [3] Rödén, J., Sporer, T., Villemoes, L., Kuntz, A., & Wabnik, S. (2015). *Subjective quality assessment of the MPEG‑H 3D Audio system for channel and object based audio.* AES 138th Convention, Warsaw, Paper 9334. [Link](https://www.aes.org/e-lib/browse.cfm?elib=17824)
+
+- [4] Dolby Laboratories. *Dolby AC‑4: Audio Delivery for Next-Generation Entertainment Services.* White paper, 2021. [PDF](https://professional.dolby.com/siteassets/pdfs/dolby_-ac-4_audio_delivery-for--next-generation-entertainment-servicesvx.pdf)
+
+- [5] Maruschke, M., Wölfel, M., & Schultz, T. *Surround Sound Processed by Opus Codec: A Perceptual Quality Assessment.* Elektronische Sprachsignalverarbeitung 2017, pp. 300–307. [PDF](https://www.essv.de/pdf/2017_300_307.pdf)
