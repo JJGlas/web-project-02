@@ -1,8 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (Docusaurus Official)
 
 on:
   push:
-    branches: [main] # Runs every time you push to the main branch
+    branches: [main]
 
 permissions:
   contents: write
@@ -29,5 +29,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          # This ensures your custom domain stays linked
+          # This line ensures your custom domain is written into the gh-pages branch
           cname: guides.byjjg.fyi
