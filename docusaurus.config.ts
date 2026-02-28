@@ -125,8 +125,14 @@ const config: Config = {
         },
       ],
       */
-      copyright: 'A collection of guides and observations by JJG. Some images are my own. Tools and other screenshots are used for educational purposes'
+      copyright: 'A collection of guides and observations by JJG. Some images are my own. Tools and other screenshots are used for educational purposes.'
       //copyright: `Copyright © ${new Date().getFullYear()} JJGlas`,
+    },
+
+    colorMode: {
+        defaultMode: 'dark', // Set this to dark so it starts there
+        disableSwitch: false, // Allow users to switch between light and dark mode
+        respectPrefersColorScheme: true, // This listens to your browser
     },
     
     prism: {
@@ -135,16 +141,26 @@ const config: Config = {
       additionalLanguages: ['bash', 'ini'],
     },
 
-    //DocSearch for searching from the navbar. Apply for DocSearch to get your Algolia index and API key.
+
+    //DocSearch
+    headTags: [
+      {
+        tagName: 'meta',
+        attributes: {
+          name: 'algolia-site-verification',
+          content: '312F8A6934875BB5',
+        },
+      },
+    ],
     
     algolia: {
       // The application ID provided by Algolia
-      appId: 'YOUR_APP_ID',
+      appId: 'DOE4VTW1KO',
 
       // Public API key: it is safe to commit it
-      apiKey: 'YOUR_SEARCH_API_KEY',
+      apiKey: '70177270f3c0ed885882a3ebb0029a48',
 
-      indexName: 'YOUR_INDEX_NAME',
+      indexName: 'Guides by JJG',
 
       // Optional: see doc section below
       contextualSearch: true,

@@ -45,8 +45,7 @@ ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i video_input.mkv -map 0 -c
 
     - `-temporal-aq 1`: Enables temporal adaptive quantization (adjusts quality over time to maintain visual consistency).
 
-    - `-preset p7`: Encoding speed/quality trade-off. p7 is the slowest and highest quality preset for NVENC. The lower the value the worse compression efficiency(ch this ). So the larger the output file with lowered visual quality.
-    For example: using -preset p5 in the command above on 1080p 24fps vidoe resulted in ...encode time, ...file size, and ... noticable visual quality reduction. 
+    - `-preset p7`: Encoding speed/quality trade-off. p7 is the slowest and highest-quality preset for NVENC, offering the best compression efficiency (maximum quality per bit). As you lower the value (e.g., toward p1), the encoder uses fewer analysis passes, resulting in lower visual quality and larger file sizes at a given bit budget. For example: using -preset p5 on a 1080p 24fps video resulted in a [XX]% faster encode time, but a [XX]% increase in file size and noticeable artifacting in dark scenes compared to p7. 
 
     - `-tune hq`: Tunes the encoder for high quality output (alternative to low-latency, etc.).
     Using low-latency will resut in a faster encode, but greatly bloats the file size. While `-tune uhq`, which was introduced in Feb 2025, will shrink some videos by more than 50% in my testing. While some video files only shrink by 5% for **the same** visual quality. The trade off with using -tune uhq is the encode time increased by about 4 times on average in my testing. That is still a fast encode. A 1080p 24fps video will encode at about 90 fps!
