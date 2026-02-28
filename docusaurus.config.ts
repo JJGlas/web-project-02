@@ -166,12 +166,12 @@ const config: Config = {
       contextualSearch: true,
 
       // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
-      externalUrlRegex: 'guides\\.byjjg\\.fyi',
+      //externalUrlRegex: '',
 
       // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
       replaceSearchResultPathname: {
-        from: '/docs/', // or as RegExp: /\/docs\//
-        to: '/',
+        from: 'https://guides.byjjg.fyi/', // Change this from '/docs/' to your full URL
+        to: '/',                          // This turns it into an internal "relative" link
       },
 
       // Optional: Algolia search parameters
