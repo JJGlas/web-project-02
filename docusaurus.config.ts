@@ -51,6 +51,16 @@ const config: Config = {
     ],
   ],
 
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'algolia-site-verification',
+        content: '312F8A6934875BB5',
+      },
+    },
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -141,17 +151,7 @@ const config: Config = {
       additionalLanguages: ['bash', 'ini'],
     },
 
-
-    //DocSearch
-    headTags: [
-      {
-        tagName: 'meta',
-        attributes: {
-          name: 'algolia-site-verification',
-          content: '312F8A6934875BB5',
-        },
-      },
-    ],
+  //DocSearch
     
     algolia: {
       // The application ID provided by Algolia
