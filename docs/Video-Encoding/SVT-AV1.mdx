@@ -34,17 +34,17 @@ av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 -
     - `--preset 3`: Speed/quality tradeoff. 0 = slowest/best quality, 13 = fastest/worst. Preset 3 is a good middle ground for high encoding quality and performance. 4 is good as well, but is less compression efficient and turns off more desirable features. A value of 2 is often suitable for 1080p if your aiming for archival quality and don't care about encoding speed. 1 is not very practical.
     - `--enable-qm 1`: Enables custom quantization matrices for better visual quality at the expense of encoding time.
     - `--qm-min 5`: Sets minimum QM index. Higher values increase compression, but may reduce detail and introduce artifacts. The default is 8. It protects high contrast edges the lower you put this and can lessen "ringing" artifacts around line work for example.
-    - `--chroma-qm-min 5`: Same as above, but for chroma planes. Tells the encoder, "Even if you think this dark area is unimportant, do not compress the color detail more than this minimal amount." This prevents color banding and "gray-out" in shadows. The default is already 8; lower this down as low as 1 if you are care about this preservation more than file size.
+    - `--chroma-qm-min 5`: Same as above, but for chroma planes. Tells the encoder, "Even if you think this dark area is unimportant, do not compress the color detail so much when needed." This prevents color banding and "gray-out" in shadows. The default is already 8; lower this down as low as 1 if you are care about this preservation more than file size.
     - `--keyint 320`: Tells the encoder to place keyframes intervals at a maximum of every 320 frames. Video is built in blocks of 32 frames (mini-GOPs). If you set your restart point (keyframe) to a multiple of 32—like `--keyint 256` or `--keyint 320`—you are lining things up perfectly. It’s like ending a sentence at the end of a page instead of mid-way through. It makes the file easier to play, faster to seek, and more efficient to compress. For 24fps video, 320 frames is about 13 seconds, which is a great balance between quality and skip-ability.
-    - `--ac-bias 1.0`: This can be specified to psycho visually preserve more energy like that of a grainy video. While this value can be increased all the way to 8.0 to dramatically preserve original film grain, textures, and edges, a value of 1 is used in this example; mainly to reduce bitrate bloat while still getting some effect. A value of 1.0 adds about 5-10% of file size bloat while with 3.0 you can expect 30-50% bloat.
+    - `--ac-bias 1.0`: This can be specified to psychovisually preserve more energy like that of a grainy video. While this value can be increased all the way to 8.0 to dramatically preserve original film grain, textures, and edges, a value of 1 is used in this example; mainly to reduce bitrate bloat while still getting some effect. A value of 1.0 adds about 5-10% of file size bloat while with 3.0 you can expect 30-50% bloat.
     - `--tune 0`: Tuning mode: 0 = VQ (Visual Quality), 1 = PSNR, 2 = SSIM, 3 = IQ (Image Quality), 4 = MS-SSIM. For video, Tune 0 is the standard as it utilizes AC-bias to optimize for human perception. If you prioritize compression efficiency through grain removal, Tune 4 (MS-SSIM) is scientifically superior to Tune 2, offering a 5–8% BD-rate improvement by using multi-scale structural analysis. Tune 3 (IQ) is specialized for still-image sharp-edge retention and will significantly increase bitrate if used for video.
     #### SVT-AV1 v4.0.1: Tune Comparison (Mainline)
 
-| Feature | **Tune 0 (VQ)** | **Tune 2 (SSIM)** | **Tune 3 (IQ)** | **Tune 4 (MS-SSIM)** |
-| :--- | :--- | :--- | :--- | :--- |
-| **Primary Goal** | Human Perception | Math Score | **Still Images (AVIF)** | **Most Compression-Efficient** |
-| **Smoothing** | **Smart.** Cleans noise but keeps "energy" via AC-Bias. | **Extreme.** Scrubs grain to boost math scores. | **Low.** Keeps grain sharp (causes bitrate bloat). | **Moderate.** Better structure than Tune 2. Usage examples: Encoding an anime or 3D animation that has mainly smooth surfaces and less texture detail; or shrinking your output file as much as possible. |
-| **Community Use** | **Standard.** The go-to for all video. | **Niche.** Used for maximum space saving. | **Avoid.** Primarily for photos, not video. | **Experimental.** 5–8% more efficient than the older, Tune 2. Removing noise while keeping edges sharp. |
+| Feature | **Tune 0 (VQ)** | **Tune 1 (PSNR)** | **Tune 2 (SSIM)** | **Tune 3 (IQ)** | **Tune 4 (MS-SSIM)** |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Primary Goal** | Human Perception | Math Score | Math Score | **Still Images (AVIF)** | **Most Compression-Efficient** |
+| **Smoothing** | **Smart.** Cleans noise but keeps "energy" via AC-Bias. | **Not Relevant** |**Extreme.** Scrubs grain to boost math scores. | **Low.** Keeps grain sharp (causes bitrate bloat). | **Moderate.** Better structure than Tune 2. Usage examples: Encoding an anime or 3D animation that has mainly smooth surfaces and less texture detail; or shrinking your output file as much as possible. |
+| **Community Use** | **Standard.** The go-to for all video. | *Scientific Testing.** Use primarily by developers for apples to apples benchmark comparisons. Don't use it if your after visual qulaity as it turns off those psychovisual features to satisfy a math equation. | **Niche.** Used for maximum space saving. | **Avoid.** Primarily for photos, not video. | **Experimental.** 5–8% more efficient than the older, Tune 2. Removing noise while keeping edges sharp. |
 
 :::tip What about Tune 0?
 In v4.0.1 Mainline, **Tune 0** now includes the "AC-Bias" (formerly known as `psy-rd`) from the community forks. This means it is the only tune that can preserve fine textures like grain and selectively "smooth" a video effectively compressing it further (for a smaller file size) without making it look like a blurry mess. It removes the random noise but keeps the "energy" of the image.
@@ -83,5 +83,9 @@ This is a guide based on personal experience and research to get you started wit
 :::
 
 > 📘 [View Full SVT-AV1 Parameter list](https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Parameters.md)
+
+## Comparisons
+
+Coming soon.
 
 ---
