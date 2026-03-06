@@ -88,8 +88,8 @@ This is a guide based on personal experience and research to get you started wit
 <details>
   <summary>**Encoding SVT-AV1 with FFmpeg Only**</summary>
 
-  The same encoding command that is explained above, but excluding Av1an and only uses FFmpeg.
-  This method of encoding is not chunked parallel encoding like Av1an, and therefore much slower. But atleast installation and getting started is a breeze.
+  This is the same encoding command that is explained above, but excluding Av1an and only uses FFmpeg.
+  This method of encoding is not chunked parallel encoding like Av1an is used for, and therefore much slower. But at least installation and getting started is a breeze.
 
   ```bash
   ffmpeg -y -i input.mkv -map 0 -c:v libsvtav1 -preset 3 -crf 22 -svtav1-params "tune=0:enable-qm=1:qm-min=5:chroma-qm-min=5:keyint=320:ac-bias=1.0" -an encoded_output.mkv

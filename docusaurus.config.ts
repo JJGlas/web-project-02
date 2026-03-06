@@ -7,7 +7,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: "Guides by JJG",
   tagline: 'Comprehensive Guides',
-  favicon: 'img/favicon.ico',
+  //favicon: 'img/favicon.ico',
+  favicon: 'img/faceLogo_128px.png',
 
   // Set the production url of your site here
   url: 'https://guides.byjjg.fyi', //got this domain on cloudflare for about $7 CAD per year
@@ -63,13 +64,13 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    //image: 'img/docusaurus-social-card.jpg',
     navbar: {
       title: "Guides by JJG",
 
       logo: {
         alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        src: 'img/faceLogo_128px.png',
         href: '/', // This makes the title/logo link to your docs/home.md (slug: /)
       },
       items: [
@@ -85,11 +86,18 @@ const config: Config = {
           type: 'search', // ✅ Adds the search bar
           position: 'right',
           className: 'navbar-item-search',
-        }, 
-        
+        },    
+
       ],
     },
     
+    docs: {
+      sidebar: {
+        hideable: true, // This adds the arrow toggle button!
+        autoCollapseCategories: true, // Optional: closes other categories when you open a new one
+      },
+    },
+
     footer: {
       style: 'dark',
       /*

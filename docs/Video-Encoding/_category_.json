@@ -2,6 +2,7 @@
   "label": "Video Encoding, Audio, & Muxing",
   "position": 1,
   "link": {
-    "type": "generated-index"
+    "type": "generated-index",
+    "slug": "/Video-Encoding"
   }
 }
