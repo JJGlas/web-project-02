@@ -53,26 +53,7 @@ ffmpeg -i input.mkv -map 0 -c:v libvvenc -preset medium -qp 30 -vvenc-params Thr
 
 ## Comparisons
 
-Here is a side by side comparison of the encoded VVC output from the example command beside the 4K (UHD) source. We see the VVC version preserves the film grain while a filze size of only mb is produced. Retaining original grain is for the most part not a good idea if you want small output files as the file increasingly grows with using lower compression settings. To combat this we have synthesised the grain! With Aomenc (AV1) or SVT-AV1 film grain synthesis is an option to solve the issue of adding grain without bloating the file size. Because this example has **consistent grain across every scene**, you could encode with SVT-AV1 instead and use film grain synthesis if you want to reduce the file size further. The file size of the original 10 second UHD HEVC clip was **541 MB** (no audio) **and** the AV1 NVENC encode was **37.2 MB** (no audio)!
- 
-Download a PNG side by side screenshot of the source vs the VVC compressed version to see the difference:
+Coming soon.
 
-import ImageDownloadLink from '@site/src/components/ImageDownloadLink';
-
-<ImageDownloadLink 
-  thumbnail="/img/4kSource_vs_NVENCAV1-preview.avif" 
-  fullRes="/img/4kSource_vs_NVENCAV1.png"
-  alt="Preview of the full-res side by side comparison"
-/>
-
-In another example below, the anime, Sousou no Frieren also has original prominent film grain in the Blu-ray source only in certain parts of areas of scenes like in the sky. I compare it to a screenshot of the Netflix AV1 encoded version where you can see Netflix retains line work detail well, but obliterates the strong film grain aesthetic. This is due to the bitrate being quite low averaging 1,468 kbps which is likely around CQ 40 or higher. In my testing I found flim grain synthesis does not work on such videos with **grain in only certain areas of the screen** where it has been artifically placed in production. Therefore the AV1 NVENC command I have provided in theory (can't legally encode DRM protected content) will do a better job than Netflix at retaining some grain and original line work with a reasonable file size output. **Don't forget** the main benefit of encoding AV1 NVENC is the extremely fast encoding speed.
-
-Download a PNG side by side screenshot of the source vs the SVT-AV1 with grain synthesis compressed version to see the difference:
-
-<ImageDownloadLink 
-  thumbnail="/img/BDvsNetflix-preview.avif" 
-  fullRes="/img/BDvsNetflix-highres.png"
-  alt="Preview of the full-res side by side comparison"
-/>
 
 ---
