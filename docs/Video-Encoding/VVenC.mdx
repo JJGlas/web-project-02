@@ -34,20 +34,21 @@ ffmpeg -i input.mkv -map 0 -c:v libvvenc -preset medium -qp 30 -vvenc-params Thr
     - `-qp 30`: Quantization Parameter mode (constant QP). Lower values = higher quality/larger files; higher values = more compression. QP ~22–32 is typical for good quality; 30 is moderate/lean compression. This setting will influence your encoding speed dramatically.
     - `Threads=22`: Manually sets the number of worker threads VVenC should use. Higher thread counts increase speed, especially with task-based parallelization, but may slightly reduce determinism. I chose this based on my 24 thread AMD 7900X3D. `24` works as well, but can cause some system instability for a tiny inscrease in encoding speed. If omitted, the dafault of only 8 threads is used! Do multiple tests to see how encoding speed is impacted. 
     - `MTProfile=2`: Selects the multithreading profile. `2` = Task-based parallelism, giving the best scalability on high-core CPUs. On my AMD 7900X3D I get ≈6.5 fps encoding speed for 1080p 24 fps SDR video. 
-    - `fga=1`: enables Film Grain Analysis. It lets VVenC analyze the source for film grain and generate SEI parameters for later synthesis during playback in MPV. If you don't have grain in your source video or don't want grain, exclude this parameter. It is so nice to not have to tinker with grain size settings like AV1 requires!
+    - `fga=1`: Enables Film Grain Analysis. It lets VVenC analyze the source for film grain and generate SEI parameters for later synthesis during playback in MPV. If you don't have grain in your source video or don't want grain, exclude this parameter. It is so nice to not have to denoise externally before encoding or tinker with grain size settings like AV1 requires!
 
 ### Audio Handling
 
     `-an`: Removes audio from the output file.
 
-    Optionally,
+    Optionally:
+    
     `-c:a libopus -b:a 128k` will convert you audio to Opus at 128kbps. Which can be convinient if you are encoding numerous episodes or videos.
     See [Audio Format & Bitrate](http://localhost:3000/category/audio-format-bitrate) if you would like help determining what format and bitrate is suitable for your 
     Stereo or Surround audio.
     
 ### Output File
 
-    - `fga_qp30_output.mkv`: Specifies the name of the output file, and output file path. 
+    - `encoded_output.mkv`: Specifies the name of the output file, and output file path. 
 
 > 📘 [View Full VVenC Parameter list] by typing `` in the terminal (CMD). Or visit: (https://github.com/fraunhoferhhi/vvenc/wiki/Usage)
 
