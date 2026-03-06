@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: "Software (CPU-based) AV1 Encoding. Main tool(s) used: FFmpeg, Av1an."
 ---
 
 # SVT-AV1
@@ -10,10 +11,10 @@ Slower, CPU-based encoding offers superior compression efficiency compared to ha
 
 1. Ensure you already have installed FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
 
-3. Av1an chunked encoding is faster than FFMpeg encoding so it is recommended. FFMpeg SVT-AV1 encoding is shown further down the page. The following commands is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable:
+3. Av1an chunked encoding is faster than FFmpeg encoding so it is recommended. FFmpeg SVT-AV1 encoding is shown further down the page. The following commands is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable:
 
 ```bash
-av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 --chroma-qm-min 5 --keyint 256 --ac-bias 1.0 --tune 0" -an -w 6 -m lsmash -c ffmpeg -l log -an -o output.mkv
+av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 --chroma-qm-min 5 --keyint 320 --ac-bias 1.0 --tune 0" -an -w 6 -m lsmash -c ffmpeg -l log -an -o output.mkv
 ```
 ## Breakdown of the Command
 
@@ -83,6 +84,18 @@ This is a guide based on personal experience and research to get you started wit
 :::
 
 > 📘 [View Full SVT-AV1 Parameter list](https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Parameters.md)
+
+<details>
+  <summary>**Encoding SVT-AV1 with FFmpeg Only**</summary>
+
+  The same encoding command that is explained above, but excluding Av1an and only uses FFmpeg.
+  This method of encoding is not chunked parallel encoding like Av1an, and therefore much slower. But atleast installation and getting started is a breeze.
+
+  ```bash
+  ffmpeg -y -i input.mkv -map 0 -c:v libsvtav1 -preset 3 -crf 22 -svtav1-params "tune=0:enable-qm=1:qm-min=5:chroma-qm-min=5:keyint=320:ac-bias=1.0" -an encoded_output.mkv
+  ```
+</details>
+
 
 ## Comparisons
 

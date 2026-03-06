@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+description: "Software (CPU-based) AV1 Encoding. Main tool(s) used: FFmpeg." 
 ---
 
 # NVENC AV1
@@ -15,7 +16,7 @@ Any NVIDIA GPU from 2022 onwards supports hardware-accelerated AV1 encoding, suc
 3. The following command is a starting point provides high-quality encoding for most videos, preserving detail efficiently while keeping file sizes manageable:
 
 ```bash
-ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i video_input.mkv -map 0 -c:v av1_nvenc -cq 30 -spatial-aq 1 -temporal-aq 1 -preset p7 -tune hq -rc-lookahead 32 -an video_output.mkv
+ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i input.mkv -map 0 -c:v av1_nvenc -cq 30 -spatial-aq 1 -temporal-aq 1 -preset p7 -tune hq -rc-lookahead 32 -an encoded_output.mkv
 ```
 ## Breakdown of the Command
 
@@ -29,7 +30,7 @@ ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i video_input.mkv -map 0 -c
 
     - `-hwaccel_output_format cuda` Keeps the decoded video frames in CUDA memory (faster GPU-to-GPU processing).
 
-    - `-i video_input.mkv`: Specifies the input file. Specify the path to the file location.
+    - `-i input.mkv`: Specifies the input file. Specify the path to the file location.
 
 ### Stream Mapping & Output Configuration
 
@@ -62,7 +63,7 @@ ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i video_input.mkv -map 0 -c
     
 ### Output File
 
-    - `video_output.mkv`: Specifies the name of the output file.
+    - `encoded_output.mkv`: Specifies the name of the output file.
 
 :::note Only RTX 50 series GPUs support YUV422 input
 RTX 50 series GPUs, introduce the 9th-generation NVENC encoder. This updated encoder adds support for YUV422 chroma subsampling in AV1 encoding, accommodating both 8-bit and 10-bit depths. You can still encode 10-bit YUV420 with RTX 40 series GPUs.

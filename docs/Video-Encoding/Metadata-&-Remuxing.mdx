@@ -1,5 +1,6 @@
 ---
 sidebar_position: 6
+description: "Get Started | Add Useful Metadata (mux) | HDR Metadata | Remux with MKVToolNix"  
 ---
 
 # Metadata & Remuxing
@@ -16,7 +17,7 @@ MediaInfo metadata example:
 Before you encode a full length video, test your encode commands. Create a 10 second test clip snippet with both low and high motion scenes, copied from the source. Videos can only be losslessly trimmed at selected keyframe points, not at each frame. There are two GUIs that make this quick and simple:
 [LosslessCut](https://github.com/mifi/lossless-cut/releases) (preferred) or [Avidemux](https://avidemux.sourceforge.net/download.html).
 
-## Add Useful Metadata
+## Add Useful Metadata (mux)
 You can add useful metadata to the streams (video, audio, subtitles) in your Matroska (.mkv) file either as part of your initial FFmpeg command or afterward with a separate one. This skips the step of using a GUI (MKVToolNix) to do the same task for each encoded video. I like to add the following to my encodes:
 - Existing subtitles
 - Exisiting HDR metadata if present
