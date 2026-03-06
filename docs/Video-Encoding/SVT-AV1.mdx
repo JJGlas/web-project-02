@@ -43,7 +43,7 @@ av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 -
 | Feature | **Tune 0 (VQ)** | **Tune 2 (SSIM)** | **Tune 3 (IQ)** | **Tune 4 (MS-SSIM)** |
 | :--- | :--- | :--- | :--- | :--- |
 | **Primary Goal** | Human Perception | Math Score | **Still Images (AVIF)** | **Most Compression-Efficient** |
-| **Smoothing** | **Smart.** Cleans noise but keeps "energy" via AC-Bias. | **Extreme.** Scrubs grain to boost math scores. | **Low.** Keeps grain sharp (causes bitrate bloat). | **Moderate.** Better structure than Tune 2. |
+| **Smoothing** | **Smart.** Cleans noise but keeps "energy" via AC-Bias. | **Extreme.** Scrubs grain to boost math scores. | **Low.** Keeps grain sharp (causes bitrate bloat). | **Moderate.** Better structure than Tune 2. Usage examples: Encoding an anime or 3D animation that has mainly smooth surfaces and less texture detail; or shinking your output file as much as possible. |
 | **Community Use** | **Standard.** The go-to for all video. | **Niche.** Used for maximum space saving. | **Avoid.** Primarily for photos, not video. | **Experimental.** 5–8% more efficient than the older, Tune 2. Removing noise while keeping edges sharp. |
 
 :::tip What about Tune 0?
