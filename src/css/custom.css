@@ -62,6 +62,16 @@
   order: 3;
 }
 
+/* This targets the specific mobile sidebar 'back' button directly and hides it */
+.navbar-sidebar__back,
+.menu__list-item--back,
+.navbar-sidebar__close[role='button'] + .menu__list .menu__list-item:first-child {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
 /* New items without order class will default to order: 0 and appear before ordered items */
 
 
