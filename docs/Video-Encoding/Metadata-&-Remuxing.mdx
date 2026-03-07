@@ -113,9 +113,14 @@ Common attachments I like to append to my Matroska (.mkv) video are:
 
 ![Cover art example](/img/cover-art-ex.avif)
 
-- Chapters: These are in `.xml`. 
+### Step 4: Add Chapters
 
-### Step 4: Check & Fix Audio Sync if Needed
+Add your own, or add existing Blu-ray/DvD disc chapters, which are stored within `.mpls` (Movie PlayList) files. These are found in the BDMV/PLAYLIST folder. MKVToolNix automatically converts `.mpls` chapter files to `.xml` format so they are compatible with the Matroska (`.mkv`) container. 
+- **To add existing Blu-ray chapters**: Open MKVToolNix GUI → drag your Blu-ray's `.mpls` file into the Source files window → click the Output tab at the top → select the Chapters sub-tab → click Generate chapters (or simply "Start multiplexing" to embed them into a new `.mkv`).
+- **To Manually Create Chapters**: Open MKVToolNix GUI → Click Chapter Editor (on the far left sidebar) → Click Chapters (top menu) → Select New chapters → Click Add chapter (bottom right) → Type your Start time (e.g., `00:05:00.000`) → Type your Name (e.g., "The Chase Scene") → Repeat for each chapter → Click Chapter Editor (top menu) → Select Save as XML.
+    - **Visually finding the correct time stamps (e.g., `00:05:00.000`) for chapters**: Open LosslessCut and drag your video file into it → Use `Alt + →` or `Alt + ←` to find the exact **keyframe** where a scene changes → Take note of the time stamp down to 1000th of a second (decimal: .001 aka. 1ms) → Type the value(s) into the "add chapter" section in MKVToolNix discussed above.
+
+### Step 5: Check & Fix Audio Sync if Needed
 
 If audio playback appears to be out of sync because you have added a different audio track in to the Matroska (.mkv), it can often be corrected perfectly. Often this is because different releases of the same show or movie sometimes slightly differ in length due to excluded/included scenes at the start or end of the movie/show.
 - Check the exact length down to the milliseconds of the video or audio track that you want to mux in and compare it to the original's with ffprobe:
@@ -124,7 +129,7 @@ ffprobe -v error -show_format -sexagesimal input.mkv
 ```
 - Next simply subtract the shorter streams duration from the longer stream to see the difference in milliseconds (ms). Example: `00:05:20.000000` - `00:05:00.020021` = `19.979979` seconds which is `19980` ms. So type this value into MKVToolNix under Multiplexer → Properties → Delay (in ms) to delay the audio thus creating perfect sync with the newly added audio track!
 
-### Step 4: Export and Check/Test
+### Step 6: Export and Check/Test
 
 Export your finished video in an MKV container
 
