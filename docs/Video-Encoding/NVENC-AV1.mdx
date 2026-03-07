@@ -46,7 +46,16 @@ ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i input.mkv -map 0 -c:v av1
 
     - `-temporal-aq 1`: Enables temporal adaptive quantization (adjusts quality over time to maintain visual consistency).
 
-    - `-preset p7`: Encoding speed/quality trade-off. p7 is the slowest and highest-quality preset for NVENC, offering the best compression efficiency (maximum quality per bit). As you lower the value (e.g., toward p1), the encoder uses fewer analysis passes, resulting in lower visual quality and larger file sizes at a given bit budget. For example: using -preset p5 on a 1080p 24fps video resulted in a [XX]% faster encode time, but a [XX]% increase in file size and noticeable artifacting in dark scenes compared to p7. 
+    - `-preset p7`: Encoding speed/quality trade-off. p7 is the slowest and highest-quality preset for NVENC, offering the best compression efficiency (maximum quality per bit). As you lower the value (e.g., toward p1), the encoder uses fewer analysis passes, resulting in lower visual quality and larger file sizes at a given bit budget. For example: Encoding a ten second 2160p 24fps HDR animation with the example FFmpeg command using **-preset p5 instead** of p7 resulted in a 29% faster encode time, a 0.33% decrease in file size, but slightly noticeable artifacting in scenes. Still acceptable quality and file size:
+
+```bash
+# highlight-start
+# preset p5 with the example FFmpeg command:
+frame=  236 fps=104 q=29.0 Lsize=    4165KiB time=00:00:09.84 bitrate=3466.5kbits/s speed=4.32x elapsed=0:00:02.27
+# highlight-end
+# preset p7 with the example FFmpeg command: 
+frame=  236 fps= 80 q=30.0 Lsize=    4179KiB time=00:00:09.84 bitrate=3478.0kbits/s speed=3.35x elapsed=0:00:02.94
+```
 
     - `-tune hq`: Tunes the encoder for high quality output (alternative to low-latency, etc.).
     Using low-latency will resut in a faster encode, but greatly bloats the file size. While `-tune uhq`, which was introduced in Feb 2025, will shrink some videos by more than 50% in my testing. While some video files only shrink by 5% for **the same** visual quality. The trade off with using -tune uhq is the encode time increased by about 4 times on average in my testing. That is still a fast encode. A 1080p 24fps video will encode at about 90 fps!

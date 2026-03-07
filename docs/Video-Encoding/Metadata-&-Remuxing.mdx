@@ -17,7 +17,7 @@ MediaInfo metadata example:
 Before you encode a full length video, test your encode commands. Create a 10 second test clip snippet with both low and high motion scenes, copied from the source. Videos can only be losslessly trimmed at selected keyframe points, not at each frame. There are two GUIs that make this quick and simple:
 [LosslessCut](https://github.com/mifi/lossless-cut/releases) (preferred) or [Avidemux](https://avidemux.sourceforge.net/download.html).
 
-## Add Useful Metadata (mux)
+## Add Useful Metadata
 You can add useful metadata to the streams (video, audio, subtitles) in your Matroska (.mkv) file either as part of your initial FFmpeg command or afterward with a separate one. This skips the step of using a GUI (MKVToolNix) to do the same task for each encoded video. I like to add the following to my encodes:
 - Existing subtitles
 - Exisiting HDR metadata if present
@@ -92,14 +92,19 @@ av1an -i "4k HDR input.mkv" -e svt-av1 -v " --crf 22 --preset 3 --film-grain 6 -
     5. **Confirm** with MediaInfo that the HDR metadata of the output matches that of the input video.
 
 
-## Remuxing with MKVToolNix
+## Muxing/Remuxing with MKVToolNix
 
-For including and excluding different audio tracks, subtitles, chapter files, setting defaults I like to use MKVToolNix for the GUI aspect.
+For including and excluding different audio tracks, subtitles, chapter files, setting defaults I like to use MKVToolNix GUI.
 
 ### Step 1: Download MKVToolNix
 Download: [MKVToolNix](https://mkvtoolnix.download/downloads.html).
 
 ### Step 2: Add & Exclude Streams
+
+- In the multiplexer section, right click to add new tracks and simply uncheck ones you want to exclude.
+![MKVToolNix example](/img/mkvtoolnix_1.png)
+
+- The GUI is fairly self explanitory. Change the tracks language, set defualt tracks, name the track... 
 
 ### Step 3: Add Attatchments
 
@@ -119,5 +124,12 @@ ffprobe -v error -show_format -sexagesimal input.mkv
 ```
 - Next simply subtract the shorter streams duration from the longer stream to see the difference in milliseconds (ms). Example: `00:05:20.000000` - `00:05:00.020021` = `19.979979` seconds which is `19980` ms. So type this value into MKVToolNix under Multiplexer → Properties → Delay (in ms) to delay the audio thus creating perfect sync with the newly added audio track!
 
+### Step 4: Export and Check/Test
+
+Export your finished video in an MKV container
+
+![MKVToolNix output](/img/mkvtoolnix_2.png)
+
+- Check the new contents and metadata to verify all looks good with MediaInfo. 
 ---
 
