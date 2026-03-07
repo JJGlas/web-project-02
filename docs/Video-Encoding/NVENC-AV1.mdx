@@ -13,7 +13,7 @@ Any NVIDIA GPU from 2022 onwards supports hardware-accelerated AV1 encoding, suc
 
 1. Ensure you already have installed FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
 
-3. The following command is a starting point provides high-quality encoding for most videos, preserving detail efficiently while keeping file sizes manageable:
+3. The following encoding command is a starting point provides high-quality encoding for most videos, preserving detail efficiently while keeping file sizes manageable:
 
 ```bash
 ffmpeg -y -hwaccel cuda -hwaccel_output_format cuda -i input.mkv -map 0 -c:v av1_nvenc -cq 30 -spatial-aq 1 -temporal-aq 1 -preset p7 -tune hq -rc-lookahead 32 -an encoded_output.mkv

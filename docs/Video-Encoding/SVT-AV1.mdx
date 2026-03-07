@@ -9,9 +9,9 @@ description: "Software (CPU-based) AV1 Encoding. Main tool(s) used: FFmpeg, Av1a
 
 Slower, CPU-based encoding offers superior compression efficiency compared to hardware-accelerated encoding, at the cost of longer processing time. Av1an mitigates this by using chunk-based parallel encoding, running multiple encoder instances simultaneously to reduce overall encoding time. SVT-AV1 is feature rich and provides the fastest CPU-based AV1 encoding.
 
-1. Ensure you already have installed FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
+1. Ensure you already have installed Av1an and/or FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
 
-3. Av1an chunked encoding is faster than FFmpeg encoding so it is recommended. FFmpeg SVT-AV1 encoding is shown further down the page. The following commands is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable:
+2. Av1an chunked encoding is faster than FFmpeg encoding so it is recommended. [FFmpeg SVT-AV1 encoding](#1) is shown further down the page. The following encoding command is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable:
 
 ```bash
 av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 --chroma-qm-min 5 --keyint 320 --ac-bias 1.0 --tune 0" -an -w 6 -m lsmash -c ffmpeg -l log -an -o output.mkv
@@ -83,7 +83,7 @@ This is a guide based on personal experience and research to get you started wit
 
 > 📘 [View Full SVT-AV1 Parameter list](https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Parameters.md)
 
-### Encoding SVT-AV1 with FFmpeg Only
+### Encoding SVT-AV1 with FFmpeg Only {#1}
 <details>
   <summary>View the FFmpeg command.</summary>
 

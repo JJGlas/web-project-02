@@ -11,7 +11,7 @@ The VVenC encoder encodes to VVC/H.266, which currently offers the most efficien
 
 1. Ensure you already have installed FFmpeg and understand basic usage. If not, read: [Tool Installation & Preparation](/Video-Encoding/Tool-Installation-&-Preparation).
 
-3. The following commands is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable and synthesizes the original look of film grain from the source:
+3. The following encoding command is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable and synthesizes the original look of film grain from the source:
 
 ```bash
 ffmpeg -i input.mkv -map 0 -c:v libvvenc -preset medium -qp 30 -vvenc-params Threads=22:MTProfile=2:fga=1 -an encoded_output.mkv
