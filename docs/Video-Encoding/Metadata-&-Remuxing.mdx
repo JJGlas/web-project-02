@@ -123,7 +123,7 @@ Add your own, or add existing Blu-ray/DvD disc chapters, which are stored within
 ### Step 5: Check & Fix Audio Sync if Needed
 
 If audio playback appears to be out of sync because you have added a different audio track in to the Matroska (.mkv), it can often be corrected perfectly. Often this is because different releases of the same show or movie sometimes slightly differ in length due to excluded/included scenes at the start or end of the movie/show.
-- Check the exact length down to the milliseconds of the video or audio track that you want to mux in and compare it to the original's with ffprobe:
+- Check the exact length down to 1000th of a second (decimal: .001 aka. 1ms) of the video or audio track that you want to mux in and compare it to that of the original's with FFprobe:
 ```bash title="ffprobe Command to Reveal Duration Down to 6 Digit Milliseconds"
 ffprobe -v error -show_format -sexagesimal input.mkv
 ```
@@ -131,7 +131,7 @@ ffprobe -v error -show_format -sexagesimal input.mkv
 
 ### Step 6: Export and Check/Test
 
-Export your finished video in an MKV container
+Export your finished video in an MKV container.
 
 ![MKVToolNix output](/img/mkvtoolnix_2.png)
 
