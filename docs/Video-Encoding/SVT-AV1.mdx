@@ -57,9 +57,7 @@ In v4.0.1 Mainline, **Tune 0** now includes the "AC-Bias" (formerly known as `ps
 
     Optionally:
 
-    - `-a "-c:a libopus -b:a 128k"`: will convert you audio to Opus at 128kbps. Which can be convinient if you are encoding numerous episodes or videos.
-    See [Audio Format & Bitrate](http://localhost:3000/category/audio-format-bitrate) if you would like help determining what format and bitrate is suitable for your 
-    Stereo or Surround audio.
+    - `-c:a libopus -b:a 128k`: Converts the audio track to Opus at 128kbps, which is convenient and saves time if you are not interested in muxing in an audio track after your video is encoded. See, [Audio Format](/Video-Encoding/Audio-Format.mdx) if you would like help determining what format and bitrate is suitable for your stereo or surround audio.
     - `-a "-c:a copy"`: copies over the source audio into the new encoded file.
     
 ### Output File & Chunking
