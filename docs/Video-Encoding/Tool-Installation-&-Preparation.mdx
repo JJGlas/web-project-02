@@ -8,16 +8,13 @@ import TabItem from '@theme/TabItem';
 # Tool Installation & Preparation
 
 ## FFmpeg Installation by Platform
-FFmpeg (command line program) is a powerful open-source tool that lets us encode (convert) audio and video in a wide range of formats as well as remux and add metadata. It can also be used for video filtering and adding effects. FFmpeg is required for each section under "Video Encoding".
+FFmpeg (command line program) is a powerful open-source tool that lets us encode (convert) audio and video in a wide range of formats as well as remux and add metadata. It can also be used for video filtering and adding effects. FFmpeg is required for each section under "Video Encoding, Audio, & Muxing".
 
 ### Windows
 
-1. Download a build of [FFmpeg](https://ffmpeg.org/download.html). Click on "gyan.dev" builds link and download the latest git-full version (
-ffmpeg-git-full.7z), which has all the latest features and updates. Extract `ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe` and place them in a permanent location of your choice, like `C:\FFmpeg` or `C:\Portable\FFmpeg`.
+1. Download a build of [FFmpeg](https://ffmpeg.org/download.html). Click on "gyan.dev" builds link and download the latest git-full version (ffmpeg-git-full.7z), which has all the latest features and updates. Extract `ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe` and place them in a permanent location of your choice, like `C:\FFmpeg` or `C:\Portable\FFmpeg`.
 
-2. Make FFmpeg Available System-wide. Ensure that the location of `ffmpeg.exe` is included in your system-wide "Path" variable so you can run it from the terminal (CMD on Windows) without needing to be inside the ffmpeg.exe folder. On Windows, search for and open "Edit the system environment variables".
-Click on Environment Variables → System variables → Path → Edit → New.
-Then, paste in the folder path of FFmpeg on your PC.
+2. Make FFmpeg Available System-wide. Ensure that the location of `ffmpeg.exe` is included in your system-wide "Path" variable so you can run it from the terminal (CMD on Windows) without needing to be inside the ffmpeg.exe folder. open Start Menu, search for and open "Edit the system environment variables" → Click on, "Environment Variables" → System variables → Path → Edit → New. Then, enter in the folder path of FFmpeg on your PC.
 
 ![add to Path](/img/environment_variables-tut.png) Figure 1.
 
@@ -91,7 +88,7 @@ Slower, CPU-based encoding offers superior compression efficiency compared to ha
 
 :::note compression efficiency
 
-Compression efficiency in video codecs refers to how effectively a codec can reduce the file size of a video while maintaining visual quality. A codec with higher compression efficiency produces smaller files with equal or better quality compared to less efficient codecs.
+Compression efficiency in video encoding refers to how effectively a codec can reduce the file size of a video while maintaining quality. A codec with higher compression efficiency produces smaller files with equal or better quality compared to less efficient codecs.
 
 :::
 
@@ -103,7 +100,7 @@ Compression efficiency in video codecs refers to how effectively a codec can red
 ### Step 2: Include the Av1an location in Path
 Include the location of `av1an.exe` in your system-wide "Path" variable so you can run it from the terminal (CMD on Windows) without needing to be inside the `av1an.exe` folder. See Figure 1 for details.
 
-### Step 3: Obtain Av1ans Dependencies
+### Step 3: Obtain Av1an's Dependencies
 Inside the Av1an folder you have created, you must place:
 - One encoder. My guide shows how to encode with [SVT-AV1](https://gitlab.com/AOMediaCodec/SVT-AV1), so you will need `SvtAv1EncApp.exe` and `SvtAv1Enc.dll`. I recommend you build SVT-AV1 from the source. First clone the SVT-AV1 repository onto your local machine, and then follow the [SVT-AV1 build instructions](https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Build-Guide.md). Then place `SvtAv1EncApp.exe` as well as `SvtAv1Enc.dll` directly in your Av1an folder. On Linux they are named, `SvtAv1EncApp` + `libSvtAv1Enc.so`.
 

@@ -8,13 +8,13 @@ description: "Get Started | Add Useful Metadata (mux) | HDR Metadata | Remux wit
 ## Get Started
 
 ### Check What Metadata the Video Already Contains
-Download: [MediaInfo](https://mediaarea.net/en/MediaInfo). Use it to check if your M2TS(`.m2ts`) or Matroska(`.mkv`) video file has any streams or metadata you want to add or exclude.
+Download: [MediaInfo](https://mediaarea.net/en/MediaInfo). Use it to check if your video file (eg. M2TS(`.m2ts`), Matroska(`.mkv`), `.mp4`, `.mov`) has any streams or metadata you want to add or exclude.
 MediaInfo metadata example:
 
 ![MediaInfo](/img/MediaInfo.png)
 
 ### Create a Short Test Clip
-Before you encode a full length video, test your encode commands. Create a 10 second test clip snippet with both low and high motion scenes, copied from the source. Videos can only be losslessly trimmed at selected keyframe points, not at each frame. There are two GUIs that make this quick and simple:
+Before you encode a full length video, test your encode command(s). Create a 10 second test clip snippet with both low and high motion scenes, copied from the source. Videos can only be losslessly trimmed at selected keyframe points, not at each frame. There are two GUIs that make this quick and simple:
 [LosslessCut](https://github.com/mifi/lossless-cut/releases) (preferred) or [Avidemux](https://avidemux.sourceforge.net/download.html).
 
 ## Add Useful Metadata
@@ -94,7 +94,7 @@ av1an -i "4k HDR input.mkv" -e svt-av1 -v " --crf 22 --preset 3 --film-grain 6 -
 
 ## Muxing/Remuxing with MKVToolNix
 
-For including and excluding different audio tracks, subtitles, chapter files, setting defaults I like to use MKVToolNix GUI.
+For including and excluding different audio tracks, subtitles, setting track defaults, chapter files, and editing additional metadata, I like to use MKVToolNix GUI.
 
 ### Step 1: Download MKVToolNix
 Download: [MKVToolNix](https://mkvtoolnix.download/downloads.html).
