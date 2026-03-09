@@ -8,7 +8,7 @@ sidebar_position: 2
 
 To keep things simple, here are my rules of thumb when choosing which audio format to mux with a video or to encode from the lossless source (PCM, FLAC, TrueHD, DTS-HD):
 
-- **Ideally**, **E-AC-3 JOC (Dolby Digital Plus with Atmos)** or **DTS:X** (a similar format) audio from streaming services like Netflix provides the best home theater multichannel audio experience while keeping file sizes relatively compact.
+- **The most compact surround format that supports Dolby Atmos**: **E-AC-3 JOC (Dolby Digital Plus with Atmos)** or **DTS:X** (also, object-based. Way less commmon) audio from streaming services like Netflix provide the best home theater multi-channel audio experience; while compressing to a typical percentage of ≈90% reduction in comparison to the lossless Atmos track.
   - Requires a commercial license and encoding tools. **Only Dolby Labratories and DTS, inc** can encode these audio tracks **while preserving** the Joint Object Coding (JOC). JOC requires advanced engineering that positions audio as individual objects in 3D space, requiring precise mixing and spatial metadata to control height, direction, and movement across speakers or headphones.
   - A bitrate of 768k is used for Atmos with 5.1 base and 1024k for Atmos with 7.1 base.
   - Add `audio-spdif=eac3` to your `mpv.conf`. This is important to ensure your **AV receiver** decodes JOC (spatial audio objects).  

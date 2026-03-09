@@ -64,11 +64,11 @@ frame=  236 fps= 80 q=30.0 Lsize=    4179KiB time=00:00:09.84 bitrate=3478.0kbit
 
 ### Audio & Subtitle Handling
 
-    - `-an`: Removes audio from the output file.
-
-    Optionally:
-
-    - `-c:a libopus -b:a 128k`: Converts the audio track to Opus at 128kbps, which is convenient and saves time if you are not interested in muxing in an audio track after your video is encoded. See, [Audio Format](/Video-Encoding/Audio-Format.mdx) if you would like help determining what format and bitrate is suitable for your stereo or surround audio.
+    - `-an`: Removes audio from the output file so you can process the audio seperately then/or mux in a different audio track you may have. For my personal videos I have filmed, edited encoded I just keep the audio as lossless format and let Youtube encode it when I upload it there:
+    
+    - `-c:a copy"`: Copies over the source audio into the new encoded video.
+    
+    But you may want to just encode the audio during the video encoding process, to a codec like Opus. See, [Audio Format](/Video-Encoding/Audio-Format.mdx) for other audio options and if you would like help determining what format and bitrate is suitable for your stereo or surround audio.
     
 ### Output File
 
