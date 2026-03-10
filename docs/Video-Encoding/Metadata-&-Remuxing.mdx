@@ -87,7 +87,7 @@ Preserving HDR metadata when encoding requires specify HDR metadata values.
 # highlight-start
 av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 --chroma-qm-min 5 --keyint 320 --ac-bias 1.0 --tune 0
 # highlight-end 
---chroma-sample-position topleft --color-primaries bt2020 --transfer-characteristics smpte2084 --matrix-coefficients bt2020-ncl --mastering-display G(0.170000,0.797000)B(0.131000,0.046000)R(0.708000,0.292000)WP(0.312700,0.329000)L(1000.000000,0.000100) --content-light 501,230" -w 6 -m lsmash -c ffmpeg -l log -an -o "4k HDR output.mkv"
+--chroma-sample-position topleft --color-primaries bt2020 --transfer-characteristics smpte2084 --matrix-coefficients bt2020-ncl --mastering-display G(0.170000,0.797000)B(0.131000,0.046000)R(0.708000,0.292000)WP(0.312700,0.329000)L(1000.000000,0.000100) --content-light 501,230" -w 6 -m lsmash -c ffmpeg -l log -a "-an" -o "4k HDR output.mkv"
 ```
     5. **Confirm** with MediaInfo that the HDR metadata of the output matches that of the input video.
 

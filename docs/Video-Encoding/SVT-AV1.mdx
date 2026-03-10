@@ -14,7 +14,7 @@ Slower, CPU-based encoding offers superior compression efficiency compared to ha
 2. Av1an chunked encoding is faster than FFmpeg encoding so it is recommended. [FFmpeg SVT-AV1 encoding](#1) is shown further down the page. The following encoding command is a starting point that provides high-quality encoding for most videos, preserving detail efficiently while keeping encoding time reasonable:
 
 ```bash
-av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 --chroma-qm-min 5 --keyint 320 --ac-bias 1.0 --tune 0" -an -w 6 -m lsmash -c ffmpeg -l log -an -o output.mkv
+av1an -i input.mkv -e svt-av1 -v "--crf 22 --preset 3 --enable-qm 1 --qm-min 5 --chroma-qm-min 5 --keyint 320 --ac-bias 1.0 --tune 0" -a "-an" -w 6 -m lsmash -c ffmpeg -l log -an -o output.mkv
 ```
 ## Breakdown of the Command
 
@@ -53,7 +53,7 @@ In v4.0.1 Mainline, **Tune 0** now includes the "AC-Bias" (formerly known as `ps
 
 ### Audio Handling
 
-    - `-an`: Removes audio from the output file so you can process the audio seperately then/or mux in a different audio track you may have. For my personal videos I have filmed, edited encoded I just keep the audio as lossless format and let Youtube encode it when I upload it there:
+    - `-a "-an"`: Removes audio from the output file so you can process the audio seperately then/or mux in a different audio track you may have. For my personal videos I have filmed, edited encoded I just keep the audio as lossless format and let Youtube encode it when I upload it there:
     
     - `-a "-c:a copy"`: Copies over the source audio into the new encoded video.
     

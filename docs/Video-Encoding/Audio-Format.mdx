@@ -112,10 +112,10 @@ ffmpeg -i input.dts -c:a eac3 -b:a 640k -dialnorm -31 -ac 6 -dsur_mode 2 -ar 480
     -filter:a "channelmap=FL-FL|FR-FR|FC-FC|LFE-LFE|SL-BL|SR-BR:5.1"
     ```
 ### Audio Syntax with Av1an (Command-Line Encoding Front-End)
-    Av1an uses FFmpeg to encode audio with the `-a` flag:
+    Av1an uses FFmpeg to encode audio, but with the `-a` flag placed in front and quotations. In example:
     ```bash
-    -a " -c:a libopus -b:a 128k " 
-    ```  
+    -a "-c:a libopus -b:a 128k" 
+    ``` 
     - This is placed at the end of your Av1an command right before `-o output.mkv`.
 ---
 
